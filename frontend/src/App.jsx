@@ -92,7 +92,7 @@ function App() {
             <div>
               <h4>Defect Heatmap:</h4>
               <img
-                src="http://192.168.68.66:8000/static/heatmap_110cf3ae.png"
+                src={prediction.heatmap_url}
                 alt="Heatmap"
                 style={{
                   width: 400,

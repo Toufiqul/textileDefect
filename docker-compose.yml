@@ -5,6 +5,8 @@ services:
     container_name: yolo_backend
     ports:
       - "8000:8000"
+    volumes:
+      - ./_Data/Image:/app/static # Mounts the volume to /app/static inside the backend
     networks:
       - yolonet
 
@@ -13,10 +15,15 @@ services:
     container_name: yolo_frontend
     ports:
       - "3000:80"
+    volumes:
+      - ./_Data/Image:/usr/share/nginx/html/static # Mounts the same volume to the frontend
     depends_on:
       - backend
     networks:
       - yolonet
+
+# volumes:
+#   shared_data: # Defines the shared volume
 
 networks:
   yolonet:

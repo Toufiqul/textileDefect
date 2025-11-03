@@ -18,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-STATIC_DIR = "app/static"
+STATIC_DIR = "/app/static"
 os.makedirs(STATIC_DIR, exist_ok=True)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
