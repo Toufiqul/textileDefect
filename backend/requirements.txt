@@ -5,3 +5,4 @@ pillow
 numpy
 onnxruntime
 python-multipart
+opencv-python
