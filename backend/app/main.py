@@ -9,10 +9,9 @@ from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(title="YOLOv8 FastAPI API")
 
-# === CORS for frontend access ===
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # change to frontend domain later
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -49,7 +48,6 @@ def create_heatmap(pil_image, detections, static_dir, image_id):
     return heatmap_path, top_det
 
 @app.post("/api/predict")
-@app.post("/api/predict")
 async def predict(request: Request, file: UploadFile = File(...)):
     image = Image.open(BytesIO(await file.read())).convert("RGB")
 
@@ -58,12 +56,18 @@ async def predict(request: Request, file: UploadFile = File(...)):
     image.save(input_path)
 
     results = run_inference(image)
-    if not results:
-        return {"prediction": "No Defect", "confidence": 0.0, "heatmap_url": None}
 
-    heatmap_path, top_det = create_heatmap(image, results, STATIC_DIR, image_id)
+    filtered = [r for r in results if r["conf"] >= 0.7]
 
-    # ✅ Return URL relative to frontend Nginx routing
+    if not filtered:
+        return {
+            "prediction": "No Defect",
+            "confidence": 0.0,
+            "heatmap_url": None
+        }
+
+    heatmap_path, top_det = create_heatmap(image, filtered, STATIC_DIR, image_id)
+
     file_url = f"/api/static/{os.path.basename(heatmap_path)}"
 
     return {
